@@ -25,4 +25,39 @@
             <th></th>
         </tr>
     </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.EndDate.ToString("dd MMM yyyy")
+                </td>
+                <td>
+                    @if (item.Status)
+                    {
+                        <span class="badge bg-success text-white">Realizado</span>
+                    }
+                    else if (DateTime.Now < item.EndDate)
+                    {
+                        <span class="badge bg-primary text-white">Executar</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger text-white">Atrasado</span>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-outline-primary btn-sm" asp-action="Edit" asp-route-id="@item.Id">
+                        Editar
+                    </a>
+                    <a class="btn btn-outline-info btn-sm" asp-action="Details" asp-route-id="@item.Id">
+                        Detalhes
+                    </a>
+                    <a class="btn btn-danger text-white btn-sm" asp-action="Delete" asp-route-id="@item.Id">
+                        Apagar
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
