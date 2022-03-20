@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ToDo.Data;
+using ToDo.Models;
 
 namespace ToDo.Controllers
 {
@@ -38,6 +39,57 @@ namespace ToDo.Controllers
             }
 
             return View(tarefa);
+        }
+
+        //GET: Tarefas/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        //POST: Tarefas/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Name,EndDate,Status")] Tarefa tarefa)
+        {
+            if (ModelState.IsValid)
+            {
+                _appCont.Add(tarefa);
+                await _appCont.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(tarefa);
+        }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tarefa = await _appCont.Tarefas.FindAsync(id);
+            if (tarefa == null)
+            {
+                return NotFound();
+            }
+            return View(tarefa);
+        }
+
+        //POST: Tarefas/Edit
+        private bool TarefaExists(int id)
+        {
+            return _appCont.Tarefas.Any(e => e.Id == id);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        private async Task<IActionResult> Edit(int id,[Bind("Id,Name,EndDate,Status")] Tarefa tarefa)
+        {
+            if (id != tarefa.Id)
+            {
+                return NotFound();
+            }
         }
     }
 }
