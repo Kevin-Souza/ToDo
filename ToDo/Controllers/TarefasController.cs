@@ -90,6 +90,46 @@ namespace ToDo.Controllers
             {
                 return NotFound();
             }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _appCont.Update(tarefa);
+                    await _appCont.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!TarefaExists(tarefa.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(tarefa);
+        }
+
+        //GET: Tarefas/Delete
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var tarefa = await _appCont.Tarefas
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (tarefa == null)
+            {
+                return NotFound();
+            }
+
+            return View(tarefa);
         }
     }
 }
