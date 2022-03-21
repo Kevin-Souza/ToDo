@@ -131,5 +131,16 @@ namespace ToDo.Controllers
 
             return View(tarefa);
         }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var tarefa = await _appCont.Tarefas.FindAsync(id);
+            _appCont.Tarefas.Remove(tarefa);
+            await _appCont.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
